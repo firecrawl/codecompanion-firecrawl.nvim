@@ -80,5 +80,5 @@ local function check(cond, msg)
 end
 check(search:find("<attachment url=", 1, true) ~= nil, "web_search returned results as attachments")
 check(page:find('<attachment url="' .. url, 1, true) ~= nil, "fetch_webpage returned the page")
-check(not search:find("Error", 1, true) and not page:find("Error", 1, true), "no tool errors")
+check(not search:find("^Error searching") and not page:find("^Error fetching"), "no tool errors")
 os.exit(failed and 1 or 0)

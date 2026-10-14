@@ -191,8 +191,12 @@ function M.request(client, payload, actions, opts)
     return nil
   end
 
-  local timeout = tostring(adapter.opts.timeout or DEFAULT_TIMEOUT)
-  adapter.raw = vim.list_extend(adapter.raw or {}, { "--max-time", timeout, "--retry-max-time", timeout })
+  local seconds = adapter.opts.timeout or DEFAULT_TIMEOUT
+  local timeout = tostring(seconds)
+  adapter.raw = vim.list_extend(
+    adapter.raw or {},
+    { "--max-time", timeout, "--retry-max-time", tostring(math.max(1, math.ceil(seconds))) }
+  )
 
   local inner = setmetatable({ adapter = adapter }, { __index = client })
   return inner:request(payload, {

@@ -68,6 +68,13 @@ describe("search response", function()
     }, out.content)
   end)
 
+  it("maps a recorded live response", function()
+    local out = firecrawl.search_result(response(200, fixture("search_live")))
+    assert.are.equal("success", out.status)
+    assert.are.equal("https://github.com/olimorris/codecompanion.nvim", out.content[1].url)
+    assert.truthy(#out.content[1].content > 0)
+  end)
+
   it("prefers scraped markdown and includes news results", function()
     local out = firecrawl.search_result(response(200, fixture("search_scraped")))
     assert.are.equal("# Neovim\n\nhyperextensible Vim-based text editor", out.content[1].content)
