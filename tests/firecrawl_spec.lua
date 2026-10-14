@@ -145,11 +145,13 @@ describe("errors", function()
         firecrawl.missing_key({ env = { api_key = "FIRECRAWL_API_KEY" } }):find("FIRECRAWL_API_KEY is not set", 1, true)
       )
       assert.is_nil(firecrawl.missing_key({ env = { api_key = "cmd:op read op://x" } }))
-      assert.is_nil(firecrawl.missing_key({ env = {
-        api_key = function()
-          return "k"
-        end,
-      } }))
+      assert.is_nil(firecrawl.missing_key({
+        env = {
+          api_key = function()
+            return "k"
+          end,
+        },
+      }))
     end)
     with_env({ FIRECRAWL_API_KEY = "fc-test" }, function()
       assert.is_nil(firecrawl.missing_key({ env = { api_key = "FIRECRAWL_API_KEY" } }))
