@@ -1,0 +1,32 @@
+name: test
+
+on:
+  push:
+    branches: [main]
+    tags: ["v*"]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        nvim: [v0.11.4, nightly]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: rhysd/action-setup-vim@v1
+        with:
+          neovim: true
+          version: ${{ matrix.nvim }}
+      - name: Unit and integration tests
+        run: make test
+      - name: End-to-end against the mock server
+        env:
+          FIRECRAWL_API_KEY: fc-mock-key
+          FIRECRAWL_API_URL: http://127.0.0.1:3999
+        run: |
+          python3 scripts/mock_server.py 3999 &
+          sleep 1
+          make e2e
+          make e2e-errors
